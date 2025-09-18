@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+  scroll-behavior: smooth !important;
+}
+
+.aside-transition{
+  transition: transform 0.3s ease-in-out;
+}
+
+/* It makes the HTML progress bar filling smooth when value change. */
+progress::-webkit-progress-value {
+  transition: 0.6s width ease-out;
+}
+
+@layer base {
+  .btn-gradient {
+    @apply !bg-gradient !bg-[length:300%_300%] hover:saturate-[1.2] shadow duration-100 !border-0 !border-transparent !bg-transparent animate-shimmer disabled:!bg-none disabled:!bg-gray-500/30  !text-white;
+  }
+  .btn {
+    @apply !capitalize;
+  }
+}
+
+/* Custom scrollbar styles (optional) */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  @apply bg-base-200/50; /* Or a slightly darker/lighter shade of your sidebar bg */
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-base-content/30; /* Or your primary color with opacity */
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  @apply bg-base-content/50; /* Slightly darker on hover */
+}
+
+/* For Firefox (simpler scrollbar styling) */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: theme('colors.base-content / 0.3') theme('colors.base-200 / 0.5'); /* thumb track */
+}
