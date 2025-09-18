@@ -8,11 +8,6 @@ const HomeMidBar = () => {
 
   return (
     <div className="mx-auto">
-      {/*
-        Wrap the component that uses useSearchParams in Suspense.
-        This is a requirement in Next.js App Router when reading searchParams
-        during rendering, as it can cause the component to suspend.
-      */}
       <Suspense fallback={<LoadingState />}>
         <PostsList />
       </Suspense>
