@@ -15,11 +15,9 @@ const LeftSidebar = memo(({ isMobileOpen, onMobileClose }) => {
 
   const fetchSubjects = useCallback(async () => {
     if (!session?.user?.id) return;
-
+    
     try {
-      const response = await fetch(
-        `/api/content/${session.user.id}/fetchSubjects`
-      );
+      const response = await fetch(`/api/content/${session.user.id}/fetchSubject`);
       if (response.ok) {
         const data = await response.json();
         setSubjects(data);
@@ -57,11 +55,11 @@ const LeftSidebar = memo(({ isMobileOpen, onMobileClose }) => {
 
   const handleSubjectCreated = useCallback((newSubject) => {
     // Add the new subject to the list and refresh
-    setSubjects((prev) => [newSubject, ...prev]);
+    setSubjects(prev => [newSubject, ...prev]);
   }, []);
 
   // Format subjects for SidebarLink
-  const subjectItems = subjects.map((subject) => ({
+  const subjectItems = subjects.map(subject => ({
     key: subject._id,
     label: subject.title,
     href: `/subject/${subject._id}`,
@@ -114,13 +112,11 @@ const LeftSidebar = memo(({ isMobileOpen, onMobileClose }) => {
               <PlusIcon className="h-5 w-5" />
               <span>Create Subject</span>
             </button>
-
+            
             {loading ? (
               <div className="text-center py-4">
                 <span className="loading loading-spinner loading-sm"></span>
-                <p className="text-xs mt-2 text-base-content/60">
-                  Loading subjects...
-                </p>
+                <p className="text-xs mt-2 text-base-content/60">Loading subjects...</p>
               </div>
             ) : (
               <SidebarLink items={subjectItems} />

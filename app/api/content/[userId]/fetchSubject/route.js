@@ -19,18 +19,19 @@ export async function GET(request, { params }) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    // Check if the user exists
-    const user = await User.findById(userId);
+    // Check if the user exists and populate with subjects
+    const user = await User.findById(userId)
+      .populate({
+        path: 'subjects',
+        options: { sort: { createdAt: -1 } }
+      });
+
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // Fetch the subjects for the user
-    const subjects = await Subject.find({ userId: user._id }).sort({
-      createdAt: -1,
-    });
-
-    return NextResponse.json(subjects);
+    // Return the populated subjects
+    return NextResponse.json(user.subjects);
   } catch (error) {
     console.error("Error fetching subjects:", error);
     return NextResponse.json(
