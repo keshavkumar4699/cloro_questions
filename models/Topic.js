@@ -1,6 +1,6 @@
 // models/Post.js
 import mongoose from "mongoose";
-import './Question'
+import "./Question";
 
 const TopicSchema = new mongoose.Schema({
   title: {
@@ -9,10 +9,18 @@ const TopicSchema = new mongoose.Schema({
     trim: true,
     maxlength: 200,
   },
-  questions: {
+  subject: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Question",
+    ref: "Subject",
+    required: true,
   },
+  questions: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Question",
+      default: [],
+    },
+  ],
   createdAt: {
     type: Date,
     default: Date.now,
