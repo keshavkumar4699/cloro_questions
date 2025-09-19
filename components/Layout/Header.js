@@ -5,10 +5,9 @@ import Logo from "../Logo";
 import AuthModal from "../Auth/AuthModal/AuthModal";
 import ButtonSignin from "../Auth/ButtonSignin";
 import {
-  PlusIcon,
   MagnifyingGlassIcon,
   XMarkIcon,
-  Bars3Icon
+  Bars3Icon,
 } from "@heroicons/react/24/solid";
 
 const Header = memo(({ toggleMobileMenu, session }) => {
@@ -21,15 +20,18 @@ const Header = memo(({ toggleMobileMenu, session }) => {
   const searchInputRef = useRef(null);
 
   // Debounced search handler
-  const handleSearch = useCallback((e) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      console.log("Searching for:", searchQuery);
-      if (showMobileSearchInput) {
-        setShowMobileSearchInput(false);
+  const handleSearch = useCallback(
+    (e) => {
+      e.preventDefault();
+      if (searchQuery.trim()) {
+        console.log("Searching for:", searchQuery);
+        if (showMobileSearchInput) {
+          setShowMobileSearchInput(false);
+        }
       }
-    }
-  }, [searchQuery, showMobileSearchInput]);
+    },
+    [searchQuery, showMobileSearchInput]
+  );
 
   const openAuthModal = useCallback((mode) => {
     setAuthModalMode(mode);
@@ -40,12 +42,8 @@ const Header = memo(({ toggleMobileMenu, session }) => {
     setIsAuthModalOpen(false);
   }, []);
 
-  const handleCreatePostClick = useCallback(() => {
-    router.push("/posts/create");
-  }, [router]);
-
   const toggleMobileSearchVisibility = useCallback(() => {
-    setShowMobileSearchInput(prev => !prev);
+    setShowMobileSearchInput((prev) => !prev);
   }, []);
 
   // Focus management for mobile search
@@ -78,7 +76,11 @@ const Header = memo(({ toggleMobileMenu, session }) => {
             >
               <Bars3Icon className="h-6 w-6" />
             </button>
-            <div className={`${showMobileSearchInput ? "hidden" : "flex"} md:flex items-center`}>
+            <div
+              className={`${
+                showMobileSearchInput ? "hidden" : "flex"
+              } md:flex items-center`}
+            >
               <Logo />
             </div>
           </div>
@@ -118,13 +120,6 @@ const Header = memo(({ toggleMobileMenu, session }) => {
                 aria-label="Open search"
               >
                 <MagnifyingGlassIcon className="h-6 w-6" />
-              </button>
-              <button
-                onClick={handleCreatePostClick}
-                className="btn btn-primary h-10 min-h-[2.5rem] px-3 rounded-full flex items-center gap-1.5 whitespace-nowrap transition-transform hover:scale-[1.02] active:scale-[0.98]"
-              >
-                <PlusIcon className="h-5 w-5" />
-                <span>Create</span>
               </button>
               <ButtonSignin
                 session={session}
