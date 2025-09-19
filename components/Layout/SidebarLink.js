@@ -13,10 +13,11 @@ const SidebarLink = ({ items }) => {
         <Link
           key={item.key}
           href={item.href}
-          className="block px-2 py-2 text-sm hover:bg-base-200 rounded-md transition-colors"
+          className="flex items-center px-2 py-2 text-sm hover:bg-base-200 rounded-md transition-colors"
           title={item.label}
         >
-          {item.label}
+          {item.icon && <span className="mr-2">{item.icon}</span>}
+          <span className="truncate">{item.label}</span>
         </Link>
       ))}
 

@@ -1,14 +1,41 @@
 "use client";
-import { memo, useCallback, useState } from "react";
+import { memo, useCallback, useState, useEffect } from "react";
 import Logo from "../Logo";
 import { PlusIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import SidebarLink from "./SidebarLink";
 import { navlinks } from "@/data/navlink";
-import { topics } from "@/data/topic";
 import CreateSubjectModal from "../Content/CreateSubjectModal";
+import { useSession } from "next-auth/react";
 
 const LeftSidebar = memo(({ isMobileOpen, onMobileClose }) => {
   const [isCreateSubjectModalOpen, setCreateSubjectModalOpen] = useState(false);
+  const [subjects, setSubjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { data: session } = useSession();
+
+  const fetchSubjects = useCallback(async () => {
+    if (!session?.user?.id) return;
+
+    try {
+      const response = await fetch(
+        `/api/content/${session.user.id}/fetchSubjects`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setSubjects(data);
+      }
+    } catch (error) {
+      console.error("Error fetching subjects:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [session]);
+
+  useEffect(() => {
+    if (session?.user?.id) {
+      fetchSubjects();
+    }
+  }, [session, fetchSubjects]);
 
   const handleOverlayClick = useCallback(
     (e) => {
@@ -29,11 +56,17 @@ const LeftSidebar = memo(({ isMobileOpen, onMobileClose }) => {
   }, []);
 
   const handleSubjectCreated = useCallback((newSubject) => {
-    // You might want to refresh the subject list here
-    console.log("Subject created:", newSubject);
-    // Optionally refresh the page or update state
-    window.location.reload();
+    // Add the new subject to the list and refresh
+    setSubjects((prev) => [newSubject, ...prev]);
   }, []);
+
+  // Format subjects for SidebarLink
+  const subjectItems = subjects.map((subject) => ({
+    key: subject._id,
+    label: subject.title,
+    href: `/subject/${subject._id}`,
+    icon: subject.emoji || "📚", // Use emoji if available
+  }));
 
   return (
     <>
@@ -81,7 +114,17 @@ const LeftSidebar = memo(({ isMobileOpen, onMobileClose }) => {
               <PlusIcon className="h-5 w-5" />
               <span>Create Subject</span>
             </button>
-            <SidebarLink items={topics} />
+
+            {loading ? (
+              <div className="text-center py-4">
+                <span className="loading loading-spinner loading-sm"></span>
+                <p className="text-xs mt-2 text-base-content/60">
+                  Loading subjects...
+                </p>
+              </div>
+            ) : (
+              <SidebarLink items={subjectItems} />
+            )}
           </div>
 
           <div className="divider my-0" />
