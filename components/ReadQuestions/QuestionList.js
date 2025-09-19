@@ -1,131 +1,114 @@
-// components/QuestionComponents/QuestionsList.jsx
+// components/ReadQuestions/QuestionList.js
 "use client";
-import { useEffect, useState } from "react";
-// import { useRouter, usePathname } from "next/navigation";
-import { QuestionSkeleton } from "./QuestionSkeleton";
+import { PlusIcon } from "@heroicons/react/24/solid";
+import QuestionCard from "@/components/SpacedRepetition/QuestionCard";
+import { getDisplayableQuestions } from "@/libs/spacedRepetition";
 
-export default function QuestionsList() {
-  const [questions, setQuestions] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  // const router = useRouter();
-  // const pathname = usePathname();
+export default function QuestionsList({
+  questions = [],
+  onCreateQuestion,
+  showCreateCard = true,
+  isHomePage = false,
+  onToggleImportant,
+  onUpdateQuestion,
+  onDeleteQuestion,
+  onDifficultySelect,
+  showDifficultyButtons = false,
+}) {
+  // Filter questions to show only new and due questions (hide future questions)
+  const displayableQuestions = getDisplayableQuestions(questions);
 
-  useEffect(() => {
-    const fetchQuestions = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const res = await fetch("/api/content/[userId]/questions");
-        if (!res.ok) {
-          const errData = await res
-            .json()
-            .catch(() => ({ message: "Server error" }));
-          throw new Error(
-            errData.message || `Failed to fetch questions: ${res.status}`
-          );
-        }
-        const data = await res.json();
-        setQuestions(data);
-      } catch (error) {
-        console.error("Fetch questions error:", error);
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchQuestions();
-  }, []);
-
-  const handleQuestionClick = (question) => {
-    // You can implement your own navigation logic here if needed
-    // For now, just log the question or navigate to a question detail page if you have one
-    console.log("Question clicked:", question);
-  };
-
-  const handleSM2 = (level, questionId, e) => {
-    e.stopPropagation();
-    console.log(`SM2 level ${level} for question ${questionId}`);
-    // Implement SM2 algorithm logic here
-  };
-
-  const handleMarkImportant = (questionId, e) => {
-    e.stopPropagation();
-    console.log(`Mark question ${questionId} as important`);
-    // Implement mark important logic here
-  };
-
-  if (loading)
+  if (questions.length === 0 && !isHomePage) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 m-3">
-        {[...Array(6)].map((_, i) => (
-          <QuestionSkeleton key={i} />
-        ))}
-      </div>
-    );
-
-  if (error)
-    return (
-      <div className="text-error text-center mt-8 p-4">Error: {error}</div>
-    );
-  if (!questions || questions.length === 0)
-    return (
-      <div className="text-center mt-8 text-base-content/70">
-        No questions found.
-      </div>
-    );
-
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 m-3">
-      {questions.map((question) => (
-        <div
-          key={question._id}
-          className="card rounded-xl p-4 transition-all duration-300 border cursor-pointer bg-base-100 border-base-300 hover:bg-base-200 hover:border-primary/20 hover:shadow-md"
-          onClick={() => handleQuestionClick(question)}
+      <div className="grid place-items-center min-h-[50vh]">
+        <button
+          onClick={onCreateQuestion}
+          className="card w-96 bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 cursor-pointer border-2 border-dashed border-base-300 hover:border-primary"
         >
-          {/* Question Content */}
-          <div className="mb-4">
-            <h3 className="font-semibold text-lg mb-2 line-clamp-2">
-              {question.title}
-            </h3>
-            {question.content && (
-              <p className="text-base-content/90 text-sm leading-relaxed line-clamp-3">
-                {question.content}
-              </p>
-            )}
-            {question.imageUrl && (
-              <div className="rounded-lg overflow-hidden max-h-80 md:max-h-96 flex justify-center bg-base-200/30 mt-2">
-                <img
-                  src={question.imageUrl}
-                  alt={question.title || "Question image"}
-                  className="object-contain max-h-80 md:max-h-96 w-full"
-                />
-              </div>
-            )}
+          <div className="card-body items-center text-center">
+            <PlusIcon className="h-12 w-12 text-primary" />
+            <h2 className="card-title">Create Your First Question</h2>
+            <p className="text-base-content/70">
+              Start by adding questions to this topic
+            </p>
           </div>
+        </button>
+      </div>
+    );
+  }
 
-          {/* SM-2 and Important Buttons */}
-          <div className="flex justify-between items-center mt-4">
-            <div className="flex space-x-1">
-              {[0, 1, 2, 3].map((level) => (
-                <button
-                  key={level}
-                  className="btn btn-xs btn-outline btn-primary"
-                  onClick={(e) => handleSM2(level, question._id, e)}
-                >
-                  {level}
-                </button>
-              ))}
-            </div>
-            <button
-              className="btn btn-xs btn-outline btn-secondary"
-              onClick={(e) => handleMarkImportant(question._id, e)}
-            >
-              ★ Important
-            </button>
+  if (questions.length === 0 && isHomePage) {
+    return (
+      <div className="grid place-items-center min-h-[50vh]">
+        <div className="card w-96 bg-base-100 shadow-xl">
+          <div className="card-body items-center text-center">
+            <div className="text-6xl mb-4">📚</div>
+            <h2 className="card-title">No Questions Yet</h2>
+            <p className="text-base-content/70">
+              Create subjects and topics, then add questions to start learning!
+            </p>
           </div>
         </div>
-      ))}
+      </div>
+    );
+  }
+
+  // Show empty state if no displayable questions (but there might be future questions)
+  if (
+    displayableQuestions.length === 0 &&
+    questions.length > 0 &&
+    !isHomePage
+  ) {
+    return (
+      <div className="grid place-items-center min-h-[50vh]">
+        <div className="card w-96 bg-base-100 shadow-xl">
+          <div className="card-body items-center text-center">
+            <div className="text-6xl mb-4">⏰</div>
+            <h2 className="card-title">No Questions Due</h2>
+            <p className="text-base-content/70">
+              All questions are scheduled for future review. Great job staying
+              on top of your learning!
+            </p>
+            <div className="text-sm text-base-content/50 mt-2">
+              {questions.length} question{questions.length !== 1 ? "s" : ""}{" "}
+              scheduled for later
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 md:gap-6">
+        {displayableQuestions.map((question) => (
+          <QuestionCard
+            key={question._id}
+            question={question}
+            onToggleImportant={onToggleImportant}
+            onUpdate={onUpdateQuestion}
+            onDelete={onDeleteQuestion}
+            onDifficultySelect={onDifficultySelect}
+            showDifficultyButtons={showDifficultyButtons}
+          />
+        ))}
+
+        {showCreateCard && !isHomePage && (
+          <button
+            onClick={onCreateQuestion}
+            className="card bg-base-100 shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-dashed border-base-300 hover:border-primary hover:bg-primary/5 min-h-[200px]"
+          >
+            <div className="card-body items-center justify-center text-center p-4">
+              <PlusIcon className="h-8 w-8 text-primary mb-2" />
+              <h3 className="font-medium text-base-content">
+                Add New Question
+              </h3>
+              <p className="text-xs text-base-content/60">Click to create</p>
+            </div>
+          </button>
+        )}
+      </div>
     </div>
   );
 }

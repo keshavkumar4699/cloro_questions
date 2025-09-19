@@ -1,8 +1,8 @@
 // components/Layout/AppLayout.js
-"use client"; 
+"use client";
 
 import { SessionProvider } from "next-auth/react";
-import Header from "./Header"; 
+import Header from "./Header";
 import LeftSidebar from "./LeftSideBar";
 import RightSideBar from "./RightSideBar";
 import { useState, useEffect } from "react";
@@ -26,7 +26,9 @@ export default function AppLayout({ children, session }) {
   }, [isMobileOpen]);
 
   return (
-    <SessionProvider session={session}> {/* Crucial for useSession in client components */}
+    <SessionProvider session={session}>
+      {" "}
+      {/* Crucial for useSession in client components */}
       <div className="flex flex-col min-h-screen bg-base-100">
         <Header toggleMobileMenu={() => setIsMobileOpen(!isMobileOpen)} />
         <div className="flex flex-1 overflow-hidden">
@@ -35,12 +37,10 @@ export default function AppLayout({ children, session }) {
             onMobileClose={() => setIsMobileOpen(false)}
             headerHeightPx={HEADER_HEIGHT_PX}
           />
-          <main
-            className="flex-1 overflow-y-auto focus:outline-none animate-fadeIn"
-          >
+          <main className="flex-1 overflow-y-auto focus:outline-none animate-fadeIn">
             {children}
           </main>
-          <div className="hidden xl:flex flex-col w-72 2xl:w-80 flex-shrink-0 border-l border-base-300 bg-base-100">
+          <div className="hidden lg:flex flex-col w-56 flex-shrink-0 border-l border-base-300 bg-base-100">
             <RightSideBar headerHeightPx={HEADER_HEIGHT_PX} />
           </div>
         </div>

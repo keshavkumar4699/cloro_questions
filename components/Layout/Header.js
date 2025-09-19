@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback, useRef, memo } from "react";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation"; // TODO: Implement search functionality
 import Logo from "../Logo";
 import AuthModal from "../Auth/AuthModal/AuthModal";
 import ButtonSignin from "../Auth/ButtonSignin";
@@ -16,7 +16,7 @@ const Header = memo(({ toggleMobileMenu, session }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [showMobileSearchInput, setShowMobileSearchInput] = useState(false);
-  const router = useRouter();
+  // const router = useRouter(); // TODO: Implement search functionality
   const searchInputRef = useRef(null);
 
   // Debounced search handler
@@ -24,7 +24,7 @@ const Header = memo(({ toggleMobileMenu, session }) => {
     (e) => {
       e.preventDefault();
       if (searchQuery.trim()) {
-        console.log("Searching for:", searchQuery);
+        // TODO: Implement search functionality
         if (showMobileSearchInput) {
           setShowMobileSearchInput(false);
         }

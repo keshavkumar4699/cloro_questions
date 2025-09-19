@@ -18,14 +18,18 @@ const userSchema = mongoose.Schema(
     password: {
       type: String,
     },
-    subjects: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Subject",
-    }],
-    questions:[{
-      type: mongoose.Schema.Types.ObjectId,
-      ref:'Question'
-    }],
+    subjects: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Subject",
+      },
+    ],
+    questions: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Question",
+      },
+    ],
     image: {
       type: String,
     },
@@ -33,7 +37,18 @@ const userSchema = mongoose.Schema(
     dailyStats: [
       {
         date: Date,
-        attempted: Number
+        attempted: Number,
+      },
+    ],
+    // Learning statistics fields
+    totalQuestionsAnswered: { type: Number, default: 0 },
+    currentStreak: { type: Number, default: 0 },
+    longestStreak: { type: Number, default: 0 },
+    lastActivityDate: { type: Date, default: null },
+    dailyActivity: [
+      {
+        date: { type: Date },
+        questionsAnswered: { type: Number, default: 0 },
       },
     ],
   },

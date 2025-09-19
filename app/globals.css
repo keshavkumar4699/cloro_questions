@@ -9,7 +9,7 @@ body {
   scroll-behavior: smooth !important;
 }
 
-.aside-transition{
+.aside-transition {
   transition: transform 0.3s ease-in-out;
 }
 
@@ -47,5 +47,35 @@ progress::-webkit-progress-value {
 /* For Firefox (simpler scrollbar styling) */
 .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: theme('colors.base-content / 0.3') theme('colors.base-200 / 0.5'); /* thumb track */
+  scrollbar-color: theme("colors.base-content / 0.3")
+    theme("colors.base-200 / 0.5"); /* thumb track */
+}
+
+/* Line clamp utilities */
+.line-clamp-1 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.line-clamp-3 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.line-clamp-4 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
 }

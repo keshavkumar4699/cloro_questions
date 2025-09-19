@@ -132,6 +132,8 @@ const LeftSidebar = memo(({ isMobileOpen, onMobileClose }) => {
       ...prev,
       [newTopic.subject]: [...(prev[newTopic.subject] || []), newTopic],
     }));
+    // Ensure the subject is expanded to show the new topic
+    setExpandedSubjects((prev) => ({ ...prev, [newTopic.subject]: true }));
   }, []);
 
   return (
@@ -146,7 +148,7 @@ const LeftSidebar = memo(({ isMobileOpen, onMobileClose }) => {
 
       <aside
         className={`
-          fixed lg:static inset-y-0 left-0 z-40 w-64 bg-base-100 border-r border-base-300
+          fixed lg:static inset-y-0 left-0 z-40 w-56 bg-base-100 border-r border-base-300
           transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]
           flex flex-col
           ${
@@ -220,11 +222,12 @@ const LeftSidebar = memo(({ isMobileOpen, onMobileClose }) => {
                           topics[subject._id]?.map((topic) => (
                             <button
                               key={topic._id}
-                              onClick={() =>
+                              onClick={() => {
                                 router.push(
                                   `/dashboard/${session.user.id}/${subject._id}/${topic._id}/questions`
-                                )
-                              }
+                                );
+                                onMobileClose(); // Close mobile sidebar when navigating
+                              }}
                               className="flex items-center px-2 py-2 text-sm hover:bg-base-300 rounded-md transition-colors w-full text-left"
                             >
                               <span className="truncate">{topic.title}</span>
