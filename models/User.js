@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 import toJSON from "./plugins/toJSON";
-import './Chain';
+import "./Subject";
+import "./Question";
 
-// USER SCHEMA
 const userSchema = mongoose.Schema(
   {
     name: {
@@ -18,13 +18,25 @@ const userSchema = mongoose.Schema(
     password: {
       type: String,
     },
+    subjects: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Subject",
+    }],
+    questions:[{
+      type: mongoose.Schema.Types.ObjectId,
+      ref:'Question'
+    }],
     image: {
       type: String,
     },
-    chain: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Chain'
-    }]
+    retentionRate: { type: Number, default: 0 }, // Calculated field
+    dailyStats: [
+      {
+        date: Date,
+        attempted: Number,
+        correct: Number,
+      },
+    ],
   },
   {
     timestamps: true,
