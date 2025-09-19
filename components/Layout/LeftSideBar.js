@@ -10,14 +10,18 @@ import {
 import SidebarLink from "./SidebarLink";
 import { navlinks } from "@/data/navlink";
 import CreateSubjectModal from "../Content/CreateSubjectModal";
-import CreateTopicModal from "../Content/CreateTopicModal"; // You'll need to create this
+import CreateTopicModal from "../Content/CreateTopicModal";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import SubjectSkeleton from "./SubjectSkeleton";
+import TopicSkeleton from "./TopicSkeleton";
 
 const LeftSidebar = memo(({ isMobileOpen, onMobileClose }) => {
+  const router = useRouter();
   const [isCreateSubjectModalOpen, setCreateSubjectModalOpen] = useState(false);
   const [isCreateTopicModalOpen, setCreateTopicModalOpen] = useState(false);
   const [subjects, setSubjects] = useState([]);
-  const [topics, setTopics] = useState({}); // Store topics by subject ID
+  const [topics, setTopics] = useState({});
   const [expandedSubjects, setExpandedSubjects] = useState({});
   const [selectedSubject, setSelectedSubject] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -126,7 +130,7 @@ const LeftSidebar = memo(({ isMobileOpen, onMobileClose }) => {
   const handleTopicCreated = useCallback((newTopic) => {
     setTopics((prev) => ({
       ...prev,
-      [newTopic.subjectId]: [...(prev[newTopic.subjectId] || []), newTopic],
+      [newTopic.subject]: [...(prev[newTopic.subject] || []), newTopic],
     }));
   }, []);
 
@@ -178,19 +182,14 @@ const LeftSidebar = memo(({ isMobileOpen, onMobileClose }) => {
             </button>
 
             {loading ? (
-              <div className="text-center py-4">
-                <span className="loading loading-spinner loading-sm"></span>
-                <p className="text-xs mt-2 text-base-content/60">
-                  Loading subjects...
-                </p>
-              </div>
+              <SubjectSkeleton />
             ) : (
               <div className="space-y-1">
                 {subjects.map((subject) => (
                   <div key={subject._id} className="rounded-md overflow-hidden">
                     <button
                       onClick={() => toggleSubjectExpanded(subject._id)}
-                      className="flex items-center justify-between w-full px-2 py-2 text-sm hover:bg-base-200 rounded-md transition-colors"
+                      className="flex items-center justify-between w-full px-2 py-2 text-sm hover:bg-base-300 rounded-md transition-colors"
                     >
                       <div className="flex items-center">
                         {subject.emoji && (
@@ -216,18 +215,20 @@ const LeftSidebar = memo(({ isMobileOpen, onMobileClose }) => {
                         </button>
 
                         {topicsLoading[subject._id] ? (
-                          <div className="text-center py-2">
-                            <span className="loading loading-spinner loading-xs"></span>
-                          </div>
+                          <TopicSkeleton />
                         ) : (
                           topics[subject._id]?.map((topic) => (
-                            <a
+                            <button
                               key={topic._id}
-                              href={`/topic/${topic._id}`}
-                              className="flex items-center px-2 py-2 text-sm hover:bg-base-200 rounded-md transition-colors block"
+                              onClick={() =>
+                                router.push(
+                                  `/dashboard/${session.user.id}/${subject._id}/${topic._id}/questions`
+                                )
+                              }
+                              className="flex items-center px-2 py-2 text-sm hover:bg-base-300 rounded-md transition-colors w-full text-left"
                             >
                               <span className="truncate">{topic.title}</span>
-                            </a>
+                            </button>
                           ))
                         )}
                       </div>

@@ -1,4 +1,4 @@
-// models/Post.js
+// models/Subject.js
 import mongoose from "mongoose";
 import "./Topic";
 
