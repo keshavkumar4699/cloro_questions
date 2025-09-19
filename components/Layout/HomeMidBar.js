@@ -2,7 +2,7 @@
 "use client";
 
 import { Suspense } from "react"; // Import Suspense
-import PostsList from "@/components/PostComponents/PostsList";
+import QuestionList from "@/components/ReadQuestions/QuestionList";
 
 const HomeMidBar = () => {
 
@@ -14,7 +14,7 @@ const HomeMidBar = () => {
         during rendering, as it can cause the component to suspend.
       */}
       <Suspense fallback={<LoadingState />}>
-        <PostsList />
+        <QuestionList />
       </Suspense>
     </div>
   );

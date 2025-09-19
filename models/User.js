@@ -33,8 +33,7 @@ const userSchema = mongoose.Schema(
     dailyStats: [
       {
         date: Date,
-        attempted: Number,
-        correct: Number,
+        attempted: Number
       },
     ],
   },
